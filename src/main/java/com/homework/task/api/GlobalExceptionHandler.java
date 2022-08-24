@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 @Slf4j
-class RestExceptionHandler {
+class GlobalExceptionHandler {
 
     @ExceptionHandler(GithubUserNotFoundException.class)
     ResponseEntity<ErrorData> userNotFound(GithubUserNotFoundException ex) {

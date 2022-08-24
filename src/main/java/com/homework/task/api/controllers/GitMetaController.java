@@ -1,7 +1,6 @@
 package com.homework.task.api.controllers;
 
 import com.homework.task.api.models.BranchDTO;
-import com.homework.task.api.models.RepositoriesDTO;
 import com.homework.task.api.models.RepositoryDTO;
 import com.homework.task.services.RepositoryService;
 import com.homework.task.services.models.ReposData;
@@ -10,9 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
-import java.util.Collections;
+import java.util.List;
 
 @RestController
 public class GitMetaController {
@@ -25,17 +23,20 @@ public class GitMetaController {
     }
 
     @GetMapping(value = "/repos", produces = "application/json")
-    public Flux<ReposData> getReposMeta(@RequestParam String user) {
-        //Flux<ReposData> account = gitReposService.getRepositories(user);
-        return gitReposService.getRepositories(user);
-        //return Mono.just(buildResponse(null));
+    public Flux<RepositoryDTO> getReposMeta(@RequestParam String user) {
+
+        return gitReposService.getRepositories(user)
+            .map(repo -> new RepositoryDTO(
+                repo.getName(),
+                repo.getOwner(),
+                getBranches(repo)
+            ));
     }
 
-    private RepositoriesDTO buildResponse(ReposData repositoriesList) {
-        return new RepositoriesDTO("petru", Collections.singletonList(
-            new RepositoryDTO("repo1", Collections.singletonList(
-                new BranchDTO("main", "sha1232134213")
-            ))
-        ));
+    private List<BranchDTO> getBranches(ReposData repo) {
+        return repo.getBranches()
+            .stream()
+            .map(branch -> new BranchDTO(branch.getName(), branch.getLastCommit()))
+            .toList();
     }
 }

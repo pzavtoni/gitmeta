@@ -21,11 +21,15 @@ public class ExternalApiConfig {
 
     @Bean
     public WebClient webClient() {
-        return WebClient.builder()
-            .baseUrl(baseURL)
+        WebClient.Builder webClient = WebClient.builder().baseUrl(baseURL);
+
+        if(githubAccessToken != null && !githubAccessToken.isBlank()) {
+            webClient.defaultHeader(HttpHeaders.AUTHORIZATION, String.format("%s %s", BEARER_TYPE, githubAccessToken));
+        }
+
+        return webClient
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .defaultHeader(HttpHeaders.ACCEPT, APPLICATION_GITHUB_JSON)
-            .defaultHeader(HttpHeaders.AUTHORIZATION, String.format("%s %s", BEARER_TYPE, githubAccessToken))
             .build();
     }
 }

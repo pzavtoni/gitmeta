@@ -5,6 +5,9 @@ services:
     build:
       dockerfile: Dockerfile
     image: repo-server:latest
+    environment:
+      - GIT_ACCESS_TOKEN=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
+      - GIT_API_BASE_URL=https://api.github.com
     ports:
       - 9001:9000
     networks:

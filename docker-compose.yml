@@ -1,0 +1,14 @@
+version: '2'
+services:
+  repo-server:
+    container_name: repo-server
+    build:
+      dockerfile: Dockerfile
+    image: repo-server:latest
+    ports:
+      - 9001:9000
+    networks:
+      - spring-cloud-network
+networks:
+  spring-cloud-network:
+    driver: bridge
